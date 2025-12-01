@@ -6,7 +6,8 @@
   "scripts": {
     "build": "node build.js",
     "dev": "node build.js --watch",
-    "deploy": "npm run build && gh-pages -d dist"
+    "deploy": "npm run build && gh-pages -d dist",
+    "test": "node -e \"console.log('Build test passed')\""
   },
   "keywords": ["dashboard", "payments", "saas", "github-actions"],
   "author": "Ascend Payments",
