@@ -2,16 +2,25 @@
   "name": "ascend-payments-dashboard",
   "version": "1.0.0",
   "description": "Enterprise SaaS Payment Gateway Dashboard",
-  "main": "build.js",
+  "main": "dist/index.html",
   "scripts": {
     "build": "node build.js",
+    "start": "node server.js",
     "dev": "node build.js --watch",
     "deploy": "npm run build && gh-pages -d dist",
     "test": "node -e \"console.log('Build test passed')\""
   },
-  "keywords": ["dashboard", "payments", "saas", "github-actions"],
-  "author": "Ascend Payments",
+  "keywords": [
+    "dashboard",
+    "payments",
+    "saas",
+    "github-actions"
+  ],
+  "author": "Soo Ji Dano | Ascend Payments",
   "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2"
+  },
   "devDependencies": {
     "gh-pages": "^6.0.0"
   },
