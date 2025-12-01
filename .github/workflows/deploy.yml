@@ -19,6 +19,11 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    
+    # 🚨 FIX 1: Grant explicit write permission for the GITHUB_TOKEN to allow deployment to gh-pages branch 🚨
+    permissions:
+      contents: write
+      
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -27,12 +32,14 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-        cache: 'npm'
-
+        # 🚨 FIX 2: Removed 'cache: npm' to avoid the "lock file not found" error,
+        # since you are not explicitly committing a lock file.
+        
     - name: Install dependencies
       run: |
         npm install
-        # Create package-lock.json if it doesn't exist
+        # Note: The following lock file logic is no longer strictly necessary if you remove 'cache: npm'
+        # but is harmless if you keep it. The lock file should ideally be committed locally.
         if [ ! -f "package-lock.json" ]; then
           npm install --package-lock-only
         fi
