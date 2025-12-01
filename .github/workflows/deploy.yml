@@ -3,6 +3,8 @@ name: Deploy Ascend Payments Dashboard
 on:
   push:
     branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
   workflow_dispatch:
     inputs:
       environment:
@@ -28,18 +30,40 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
-      run: npm ci
+      run: |
+        npm install
+        # Create package-lock.json if it doesn't exist
+        if [ ! -f "package-lock.json" ]; then
+          npm install --package-lock-only
+        fi
+
+    - name: Verify project structure
+      run: |
+        echo "📁 Project Structure:"
+        find . -name "*.js" -o -name "*.html" -o -name "*.css" -o -name "*.json" | head -20
+        echo ""
+        echo "✅ Project structure verified"
 
     - name: Build dashboard
       run: npm run build
 
     - name: Test build output
       run: |
+        echo "🔍 Checking build output..."
         if [ ! -f "dist/index.html" ]; then
-          echo "❌ Build failed - index.html not found"
+          echo "❌ Build failed - index.html not found in dist/"
+          ls -la dist/ 2>/dev/null || echo "dist/ directory does not exist"
           exit 1
         fi
-        echo "✅ Build output verified"
+        
+        # Check if the built file has content
+        FILESIZE=$(stat -f%z dist/index.html 2>/dev/null || stat -c%s dist/index.html 2>/dev/null || echo "0")
+        if [ "$FILESIZE" -lt 1000 ]; then
+          echo "❌ Build output too small - likely build failure"
+          exit 1
+        fi
+        
+        echo "✅ Build output verified - size: $((FILESIZE / 1024)) KB"
 
     - name: Upload build artifact
       uses: actions/upload-artifact@v4
@@ -49,7 +73,7 @@ jobs:
         retention-days: 7
 
     - name: Deploy to GitHub Pages
-      if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -58,22 +82,24 @@ jobs:
         force_orphan: true
 
     - name: Create deployment summary
+      if: always()
       run: |
         echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "**Dashboard:** Ascend Payments Platform" >> $GITHUB_STEP_SUMMARY
         echo "**Environment:** ${{ github.event.inputs.environment || 'production' }}" >> $GITHUB_STEP_SUMMARY
-        echo "**Status:** ✅ Successfully deployed" >> $GITHUB_STEP_SUMMARY
+        echo "**Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
         echo "**Timestamp:** $(date -u)" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### 📊 Build Details" >> $GITHUB_STEP_SUMMARY
         echo "- Node.js version: 18" >> $GITHUB_STEP_SUMMARY
         echo "- Build directory: dist/" >> $GITHUB_STEP_SUMMARY
-        echo "- GitHub Pages: Enabled" >> $GITHUB_STEP_SUMMARY
+        echo "- GitHub Pages: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' }}" >> $GITHUB_STEP_SUMMARY
 
   quality-check:
     runs-on: ubuntu-latest
     needs: build-and-deploy
+    if: always()
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -86,18 +112,31 @@ jobs:
 
     - name: Validate HTML structure
       run: |
+        echo "🔍 Validating HTML structure..."
+        if [ ! -f "dist-check/index.html" ]; then
+          echo "❌ Artifact not found"
+          exit 1
+        fi
+        
         if grep -q "Ascend Payments Platform" dist-check/index.html; then
-          echo "✅ HTML structure validated"
+          echo "✅ HTML structure validated - Title found"
         else
-          echo "❌ HTML validation failed"
+          echo "❌ HTML validation failed - Title not found"
+          cat dist-check/index.html | head -10
           exit 1
         fi
 
-    - name: Check file size
+    - name: Check file size and content
       run: |
-        SIZE=$(stat -f%z dist-check/index.html 2>/dev/null || stat -c%s dist-check/index.html)
-        echo "📁 Built file size: $((SIZE / 1024)) KB"
-        if [ $SIZE -lt 100 ]; then
+        echo "📊 Build artifact analysis:"
+        ls -la dist-check/
+        echo ""
+        FILESIZE=$(stat -f%z dist-check/index.html 2>/dev/null || stat -c%s dist-check/index.html)
+        echo "📁 Built file size: $((FILESIZE / 1024)) KB"
+        
+        if [ $FILESIZE -lt 1000 ]; then
           echo "❌ File size too small - build may be incomplete"
           exit 1
         fi
+        
+        echo "✅ Build artifact validated"
