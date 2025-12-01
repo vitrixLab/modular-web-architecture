@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <!-- HEAD -->
+</head>
+
+<body>
+  <!-- Theme Toggle Container -->
+  <div class="theme-toggle-container">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Switch between dark and light mode">
+      <div class="toggle-track">
+        <div class="toggle-thumb">
+          <span class="toggle-icon sun">☀️</span>
+          <span class="toggle-icon moon">🌙</span>
+        </div>
+      </div>
+      <span class="toggle-label" id="toggleLabel">Dark Mode</span>
+    </button>
+    
+    <!-- System Theme Detection -->
+    <div class="theme-preference" id="themePreference">
+      <button class="preference-btn" data-theme="system" aria-label="Use system theme">
+        <span class="preference-icon">⚙️</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Dashboard -->
+  <div class="app-container">
+    <!-- NAVIGATION -->
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- HEADER -->
+
+      <!-- Dashboard Content -->
+      <main class="dashboard-content">
+        <div class="content-header">
+          <h2>Platform Overview</h2>
+          <p>Monitor your payment gateway performance and client activities in real-time.</p>
+        </div>
+
+        <!-- Metrics Cards Grid -->
+        <div id="metricsCardsContainer" class="cards-grid">
+          <!-- METRICS -->
+        </div>
+
+        <!-- Recent Activity Section -->
+        <div class="dashboard-section">  
+          <h3 class="dashboard-header">Recent Client Onboarding</h3>
+          <div id="activityListContainer" class="activity-list">
+            <!-- ACTIVITY -->
+          </div>
+        </div>
+
+        <!-- System Health Section -->
+        <div class="dashboard-section">   
+          <h3 class="dashboard-header">System Health & Monitoring</h3>
+          <div id="healthStatusContainer" class="health-grid">
+            <!-- HEALTH -->
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="app-footer">
+        Ascend Payments Platform • <span id="currentTheme">Dark Mode</span> • v1.0.0
+      </footer>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+</body>
+</html>
