@@ -1,10 +1,50 @@
-Run actions/setup-node@v4
-Attempting to download 18...
-Acquiring 18.20.8 - x64 from https://github.com/actions/node-versions/releases/download/18.20.8-14110393767/node-18.20.8-linux-x64.tar.gz
-Extracting ...
-/usr/bin/tar xz --strip 1 --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/46d58059-19e0-4409-8889-dd7269452015 -f /home/runner/work/_temp/f5256555-dac6-4ef6-a8ff-2644c88fdd72
-Adding to the cache ...
-Environment details
-/opt/hostedtoolcache/node/18.20.8/x64/bin/npm config get cache
-/home/runner/.npm
-Error: Dependencies lock file is not found in /home/runner/work/modular-web-architecture/modular-web-architecture. Supported file patterns: package-lock.json,npm-shrinkwrap.json,yarn.lock
+### Dependency Directories ###
+# Node.js dependencies
+/node_modules
+
+# pnpm-store used by pnpm
+/node_modules/.pnpm-store
+# Yarn classic cache files (v1)
+/.yarn-cache
+# Yarn modern cache files (v2/v3)
+.yarn/cache
+.pnp.*
+
+### Build Artifacts / Generated HTML ###
+# Compiled/generated static files (Common SSG outputs)
+/dist
+/build
+/out
+/public # If used as an output directory, not source
+.next # Next.js build output
+.astro # Astro build output
+.vite # Vite build cache
+.parcel-cache # Parcel build cache
+
+### Logging and Lock Files ###
+npm-debug.log*
+yarn-error.log*
+.npm
+.eslintcache
+.stylelintcache
+
+### Environment and Config Files ###
+# Local environment variables and secrets
+.env
+.env.local
+.env.*.local
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
+.vscode/*.local
+
+### OS and Editor Files ###
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
+# IntelliJ/WebStorm/etc
+.idea/
+# VS Code
+.vscode/
